@@ -1,0 +1,4 @@
+.contact-notice { padding: 14px 18px; border-left: 4px solid #2b64b8; background: #eef4ff; color: #153964; margin: 0 0 20px; }
+#wpforms-form-16 input:not([type="hidden"]), #wpforms-form-16 textarea { width: 100%; max-width: 100%; padding: 10px 14px; border: 1px solid #ccc; border-radius: 3px; font: inherit; }
+#wpforms-form-16 .wpforms-field { margin-bottom: 20px; }
+#wpforms-form-16 .wpforms-field-label { display: block; margin-bottom: 5px; }
