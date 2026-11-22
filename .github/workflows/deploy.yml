@@ -18,7 +18,8 @@ jobs:
           password: ${{ secrets.HOSTINGER_FTP_PASSWORD }}
           protocol: ftps
           local-dir: ./
-          server-dir: /public_html/
+          # This site's dedicated FTP account is rooted at public_html.
+          server-dir: ./
           exclude: |
             **/.git*
             **/.git*/**
