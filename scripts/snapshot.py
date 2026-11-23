@@ -25,7 +25,7 @@ def fetch(url):
 
 def resource_paths(text):
     text = unescape(text.replace('\\/', '/'))
-    matches = re.findall(r'(?:https?:)?//hmgrains\.com/((?:wp-content|wp-includes)/[^\s"\'<>\\)]+)', text)
+    matches = re.findall(r'(?:https?:)?//(?:hmgrains\.com|blue-eel-593949\.hostingersite\.com)/((?:wp-content|wp-includes)/[^\s"\'<>\\)]+)', text)
     return {urlparse('/' + item).path.lstrip('/') for item in matches}
 
 
@@ -79,6 +79,15 @@ def main():
         dest.write_text(html, encoding='utf-8')
         print('Saved', slug or '/')
 
+    # Elementor loads these widget modules dynamically rather than via HTML tags.
+    paths |= {
+        'wp-content/plugins/elementor/assets/js/chunks/' + name + '.min.js'
+        for name in ('background-slideshow', 'background-video', 'text-editor',
+                     'section-stretched-section', 'counter', 'toggle')
+    }
+    for css in (ROOT / 'wp-content').rglob('*.css'):
+        paths |= resource_paths(css.read_text(encoding='utf-8', errors='replace'))
+
     # CSS refers to font files and background images using relative URLs.
     # Download those alongside the stylesheets at the same paths.
     while paths:
@@ -104,7 +113,8 @@ def main():
                         paths.add(str(dest.relative_to(ROOT)))
     for css in (ROOT / 'wp-content').rglob('*.css'):
         text = css.read_text(encoding='utf-8', errors='replace')
-        updated = text.replace(SITE + '/', '/').replace('//hmgrains.com/', '/')
+        updated = (text.replace(SITE + '/', '/').replace('//hmgrains.com/', '/')
+                   .replace('https://blue-eel-593949.hostingersite.com/', '/'))
         if updated != text:
             css.write_text(updated, encoding='utf-8')
     print('Snapshot complete')
